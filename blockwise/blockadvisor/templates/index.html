@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+{% block content %}
+
+<h1>Block Wise</h1>
+  <p>Welcome to <em>Block Wise - Our suggestions for good times to visit restaurants in DC's most interesting and popular neighborhoods</em>.</p>
+
+  <hr/>
+
+    <img src="{%static 'css/images/silhouette-3257100__340.png' %}" alt="restaurant" />
+
+  <hr/>
+
+<h3><em>Number of Locations: {{ num_locations }} </em></h3>
+
+{% endblock %}
