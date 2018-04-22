@@ -51,6 +51,10 @@ import psycopg2
 
 import datetime
 
+from pyparsing import *
+
+from decimal import Decimal
+
 
 # This client code can run on Python 2.x or 3.x.  Your imports can be
 
@@ -75,9 +79,6 @@ except ImportError:
     from urllib import quote
 
     from urllib import urlencode
-
-
-
 
 
 # Yelp Fusion no longer uses OAuth as of December 7, 2017.
@@ -158,9 +159,7 @@ def request(host, path, api_key, url_params=None):
     print(u'Querying {0} ...'.format(url))
 
 
-
     response = requests.request('GET', url, headers=headers, params=url_params)
-
 
 
     return response.json()
@@ -224,127 +223,80 @@ def get_business(api_key, business_id):
 
 def query_api(term, location):
 
-    """Queries the API by the input values from the user.
 
+    with open('2018422yelp50.json') as json_data:
+        businesses = json.load(json_data)
 
-    Args:
-
-        term (str): The search term to query.
-
-        location (str): The location of the business to query.
-
-    """
-
-    response = search(API_KEY, term, location)
-
-
-    businesses = response.get('businesses')
-
-
-    if not businesses:
-
-        print(u'No businesses for {0} in {1} found.'.format(term, location))
-
-        return
-
-
-#    pprint.pprint(response, indent=2)
-
-#Judy Note: This connects to Judy's Postgres database that I called "blockwise" for now; edit for your database name
     con = None
 
     con = psycopg2.connect("dbname='blockwise' user='postgres' password='purplerain'")
 
     cur = con.cursor()
 
-#Judy Note: I added this loop to print each business record returned by Yelp to the console, parse the house number and street name, and load records into PostgreSQL
-    now = datetime.datetime.now()
-    jsonfile = str(now.year) + str(now.month) + str(now.day)
+    for business in businesses:
+        print('works ' + business['name'] + ', ' + str(business['rating']))
 
-    #Judy Note: Save the JSON for each Yelp business to a JSON file named with the business ID
-    with open(jsonfile + 'yelp50.json', 'wb') as f:
+        #Judy Note:
+        split_string = business['location']['address1'].split(' ',1)
+        #street_name = normalizeStreetSuffixes(split_string[1]).lower()   #Judy added street suffix normalization, e.g., "Street" to "St" on 0418
+        street_name = split_string[1].lower()   #Judy added street suffix normalization, e.g., "Street" to "St" on 0418
+        house_number = split_string[0]
+        #Code to eliminate numbers from house numbers so can match to block street number ranges
+        house_number_no_char = ''.join([i for i in house_number if i.isdigit()])     
 
+        address = business['location']['address1']
+        business_name = business['name']
 
-        for business in businesses:
+        #loc_id = '500000'  #need to change this to the business ID; program didn't with business['id'] here for some reason to figure out later
+        loc_id = business['id']  #need to change this to the business ID; program didn't with business['id'] here for some reason to figure out later
+        review_count = business['review_count']
+        #s_rating = '0'
+        rating = Decimal(business['rating'])
+        #Judy need to insert into location categories table
+        categories = ""
+        for x in business['categories']:
+            print(x['title'])
+            s_category = x['title']
+            categories = categories + ' * ' + x['title']
 
-            #Judy Note: Print business name and location for each Yelp business to the console
-     #       print(business['id'])
-            print(business['name'] + ', ' + str(business['rating']))
-     #       print(business['location']['address1'])
+        lati = float(business['coordinates']['latitude'])
+        longi = float(business['coordinates']['longitude'])
+        s_lati = str(business['coordinates']['latitude'])
+        s_longi = str(business['coordinates']['longitude'])
+        coord = s_lati + "," + s_longi
 
-            json.dump(response, codecs.getwriter('utf-8')(f), ensure_ascii=False)
+        phone = business['display_phone']
+        #print(phone)
+        image_url = business['image_url']
+        #print(image_url)
+        url = business['url']
+        #print(url)
+        zip = business['location']['zip_code']
+        #print(zip)
+        city = business['location']['city']
+        #print(city)
+        state = business['location']['state']
+        #print(state)
+        country = business['location']['country']
+        #print(country)
 
-            #Judy Note:
-            split_string = business['location']['address1'].split(' ',1)
-            #street_name = normalizeStreetSuffixes(split_string[1]).lower()   #Judy added street suffix normalization, e.g., "Street" to "St" on 0418
-            street_name = split_string[1].lower()   #Judy added street suffix normalization, e.g., "Street" to "St" on 0418
-            house_number = split_string[0]
-            address = business['location']['address1']
-            business_name = business['name']
+        #Judy Note:  May need to add test for the keys. For example, price did not appear in all businesses and caused an error for a business (Napoli_ without it
 
-            #loc_id = '500000'  #need to change this to the business ID; program didn't with business['id'] here for some reason to figure out later
-            loc_id = business['id']  #need to change this to the business ID; program didn't with business['id'] here for some reason to figure out later
-            review_count = business['review_count']
-            #s_rating = '0'
-            rating = business['rating']
-            #Judy need to insert into location categories table
-            categories = ""
-            for x in business['categories']:
-                print(x['title'])
-                s_category = x['title']
-                categories = categories + ' * ' + x['title']
+        SQL = "INSERT INTO blockadvisor_location(location_id, business_name, address, street_number, street_name, review_count, rating, categories, latitude, longitude, coordinates, phone, image_url, url, zip_code, city, state, country)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;"
+        cur.execute(SQL, (loc_id, business_name, address, house_number_no_char, street_name, review_count, rating, categories, lati, longi, coord, phone, image_url, url, zip, city, state, country))
+        con.commit()
 
-            lati = str(business['coordinates']['latitude'])
-            longi = str(business['coordinates']['longitude'])
-            coord = lati + "," + longi
+        inserted_id = cur.fetchone()[0]
+        print('inserted: ' + str(inserted_id))
 
-            phone = business['display_phone']
-            #print(phone)
-            image_url = business['image_url']
-            #print(image_url)
-            url = business['url']
-            #print(url)
-            zip = business['location']['zip_code']
-            #print(zip)
-            city = business['location']['city']
-            #print(city)
-            state = business['location']['state']
-            #print(state)
-            country = business['location']['country']
-            #print(country)
-
-            #Judy Note:  May need to add test for the keys. For example, price did not appear in all businesses and caused an error for a business (Napoli_ without it
-
-            SQL = "INSERT INTO blockadvisor_location(location_id, business_name, address, street_number, street_name, review_count, rating, categories, latitude, longitude, coordinates, phone, image_url, url, zip_code, city, state, country)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;"
-            cur.execute(SQL, (loc_id, business_name, address, house_number, street_name, review_count, rating, categories, lati, longi, coord, phone, image_url, url, zip, city, state, country))
+        for x in business['categories']:
+            s_category = x['title']
+            SQL = "INSERT INTO blockadvisor_location_categories(blockadvisor_location_id, category)  VALUES (%s, %s);"
+            cur.execute(SQL, (inserted_id, s_category))
             con.commit()
 
-            inserted_id = cur.fetchone()[0]
-            print('inserted: ' + str(inserted_id))
-
-            for x in business['categories']:
-                s_category = x['title']
-                SQL = "INSERT INTO blockadvisor_location_categories(blockadvisor_location_id, category)  VALUES (%s, %s);"
-                cur.execute(SQL, (inserted_id, s_category))
-                con.commit()
-
     con.close()
 
-    business_id = businesses[0]['id']
-
-    print(u'{0} businesses found, querying business info ' \
-
-        'for the top result "{1}" ...'.format(
-
-            len(businesses), business_id))
-
-    response = get_business(API_KEY, business_id)
-
-    con.close()
-
-    print(u'Result for business "{0}" found:'.format(business_id))
-
-    #pprint.pprint(response, indent=2)
 
 def normalizeStreetSuffixes(inputValue,case='l'):
         '''

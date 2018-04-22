@@ -67,37 +67,80 @@ ORDER BY l.business_name, c.report_date DESC, c.offense_group DESC, c.offense;
 
 4642
 
-new table
 
--- Table: public.blockadvisor_location
+crime table
 
-DROP TABLE public.blockadvisor_location;
+-- DROP TABLE public.blockadvisor_crime;
 
--- Table: public.blockadvisor_location
+CREATE TABLE public.blockadvisor_crime
+(
+    neighborhood_cluster text COLLATE pg_catalog."default",
+    census_tract text COLLATE pg_catalog."default",
+    offense_group text COLLATE pg_catalog."default",
+    longitude text COLLATE pg_catalog."default",
+    end_date text COLLATE pg_catalog."default",
+    offense_text text COLLATE pg_catalog."default",
+    shift text COLLATE pg_catalog."default",
+    yblock text COLLATE pg_catalog."default",
+    district text COLLATE pg_catalog."default",
+    ward text COLLATE pg_catalog."default",
+    year text COLLATE pg_catalog."default",
+    offense_key text COLLATE pg_catalog."default",
+    bid text COLLATE pg_catalog."default",
+    sector text COLLATE pg_catalog."default",
+    psa text COLLATE pg_catalog."default",
+    ucrrank text COLLATE pg_catalog."default",
+    block_group text COLLATE pg_catalog."default",
+    voting_precinct text COLLATE pg_catalog."default",
+    xblock text COLLATE pg_catalog."default",
+    block text COLLATE pg_catalog."default",
+    block_street_name text COLLATE pg_catalog."default",
+    block_street_number_begin text COLLATE pg_catalog."default",
+    block_street_number_end text COLLATE pg_catalog."default",
+    start_date text COLLATE pg_catalog."default",
+    cnn text COLLATE pg_catalog."default",
+    offense text COLLATE pg_catalog."default",
+    anc text COLLATE pg_catalog."default",
+    report_date text COLLATE pg_catalog."default",
+    method text COLLATE pg_catalog."default",
+    location text COLLATE pg_catalog."default",
+    latitude text COLLATE pg_catalog."default"
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.blockadvisor_crime
+    OWNER to postgres;
+
+
+location table
+
 
 DROP TABLE public.blockadvisor_location;
 
 CREATE TABLE public.blockadvisor_location
 (
     id integer NOT NULL DEFAULT nextval('blockadvisor_location_id_seq'::regclass),
-    business_name character varying(200) COLLATE pg_catalog."default" NOT NULL,
-    street_name character varying(300) COLLATE pg_catalog."default" NOT NULL,
-    street_number character varying(50) COLLATE pg_catalog."default",
     address character varying(300) COLLATE pg_catalog."default" NOT NULL,
+    business_name character varying(200) COLLATE pg_catalog."default" NOT NULL,
     categories character varying(200) COLLATE pg_catalog."default",
     city character varying(100) COLLATE pg_catalog."default",
-    location_id character varying(150) COLLATE pg_catalog."default",
-    review_count character varying(50) COLLATE pg_catalog."default",
-    state character varying(50) COLLATE pg_catalog."default",
-    url character varying(200) COLLATE pg_catalog."default",
-    zip_code character varying(20) COLLATE pg_catalog."default",
-    rating character varying(50) COLLATE pg_catalog."default",
-    latitude character varying(70) COLLATE pg_catalog."default",
-    longitude character varying(70) COLLATE pg_catalog."default",
     coordinates character varying(150) COLLATE pg_catalog."default",
-    phone character varying(50) COLLATE pg_catalog."default",
-    image_url character varying(150) COLLATE pg_catalog."default",
     country character varying(20) COLLATE pg_catalog."default",
+    image_url character varying(150) COLLATE pg_catalog."default",
+    latitude double precision,
+    location_id character varying(150) COLLATE pg_catalog."default",
+    longitude double precision,
+    phone character varying(50) COLLATE pg_catalog."default",
+    rating numeric,
+    review_count integer,
+    state character varying(50) COLLATE pg_catalog."default",
+    street_name character varying(300) COLLATE pg_catalog."default" NOT NULL,
+    street_number integer,
+    url character varying(300) COLLATE pg_catalog."default",
+    zip_code character varying(20) COLLATE pg_catalog."default",
     CONSTRAINT blockadvisor_location_pkey PRIMARY KEY (id)
 )
 WITH (
@@ -109,7 +152,38 @@ ALTER TABLE public.blockadvisor_location
     OWNER to postgres;
 
 
+
+DROP TABLE public.blockadvisor_location_categories;
+
+CREATE TABLE public.blockadvisor_location_categories
+(
+    id integer NOT NULL DEFAULT nextval('blockadvisor_location_categories_id_seq'::regclass),
+    blockadvisor_location_id integer,
+    category character varying(200) COLLATE pg_catalog."default",
+    CONSTRAINT blockadvisor_location_categories_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.blockadvisor_location_categories
+    OWNER to postgres;
+
+
+
+
+
+
+
 view
+
+
+
+
+
+
+
 
 -- View: public.location_crime
 
