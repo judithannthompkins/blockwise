@@ -67,3 +67,70 @@ ORDER BY l.business_name, c.report_date DESC, c.offense_group DESC, c.offense;
 
 4642
 
+new table
+
+-- Table: public.blockadvisor_location
+
+DROP TABLE public.blockadvisor_location;
+
+-- Table: public.blockadvisor_location
+
+DROP TABLE public.blockadvisor_location;
+
+CREATE TABLE public.blockadvisor_location
+(
+    id integer NOT NULL DEFAULT nextval('blockadvisor_location_id_seq'::regclass),
+    business_name character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    street_name character varying(300) COLLATE pg_catalog."default" NOT NULL,
+    street_number character varying(50) COLLATE pg_catalog."default",
+    address character varying(300) COLLATE pg_catalog."default" NOT NULL,
+    categories character varying(200) COLLATE pg_catalog."default",
+    city character varying(100) COLLATE pg_catalog."default",
+    location_id character varying(150) COLLATE pg_catalog."default",
+    review_count character varying(50) COLLATE pg_catalog."default",
+    state character varying(50) COLLATE pg_catalog."default",
+    url character varying(200) COLLATE pg_catalog."default",
+    zip_code character varying(20) COLLATE pg_catalog."default",
+    rating character varying(50) COLLATE pg_catalog."default",
+    latitude character varying(70) COLLATE pg_catalog."default",
+    longitude character varying(70) COLLATE pg_catalog."default",
+    coordinates character varying(150) COLLATE pg_catalog."default",
+    phone character varying(50) COLLATE pg_catalog."default",
+    image_url character varying(150) COLLATE pg_catalog."default",
+    country character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT blockadvisor_location_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.blockadvisor_location
+    OWNER to postgres;
+
+
+view
+
+-- View: public.location_crime
+
+DROP VIEW public.location_crime;
+
+CREATE OR REPLACE VIEW public.location_crime AS
+ SELECT l.business_name,
+    l.address,
+    c.block,
+    c.offense,
+    c.offense_group,
+    c.method,
+    c.ucrrank,
+    c.year,
+    c.report_date
+   FROM blockadvisor_location l
+     JOIN blockadvisor_crime c ON l.street_name::text = c.block_street_name
+  WHERE l.street_number::text >= c.block_street_number_begin AND l.street_number::text <= c.block_street_number_end
+  ORDER BY l.business_name, c.offense, c.report_date DESC;
+
+ALTER TABLE public.location_crime
+    OWNER TO postgres;
+
+
