@@ -1,0 +1,28 @@
+-- Table: public.blockadvisor_crime
+
+-- DROP TABLE public.blockadvisor_crime;
+
+CREATE TABLE public.blockadvisor_crime
+(
+    id integer NOT NULL,
+    shift character varying COLLATE pg_catalog."default",
+    offense character varying COLLATE pg_catalog."default",
+    methods character varying COLLATE pg_catalog."default",
+    location character varying COLLATE pg_catalog."default",
+    endblock integer,
+    startblock integer,
+    reporttime_standard timestamp without time zone,
+    street_name character varying COLLATE pg_catalog."default",
+    offense_score integer,
+    method_score integer,
+    general_safety_score integer,
+    CONSTRAINT blockadvisor_crime_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.blockadvisor_crime
+    OWNER to postgres;
+

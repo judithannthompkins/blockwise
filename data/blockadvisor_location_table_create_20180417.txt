@@ -1,0 +1,32 @@
+-- Table: public.blockadvisor_location
+
+-- DROP TABLE public.blockadvisor_location;
+
+CREATE TABLE public.blockadvisor_location
+(
+    id integer NOT NULL DEFAULT nextval('blockadvisor_location_id_seq'::regclass),
+    business_name character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    street_name character varying(300) COLLATE pg_catalog."default" NOT NULL,
+    street_number character varying(50) COLLATE pg_catalog."default",
+    address character varying(300) COLLATE pg_catalog."default" NOT NULL,
+    accept_pickup character varying(50) COLLATE pg_catalog."default",
+    categories character varying(200) COLLATE pg_catalog."default",
+    city character varying(100) COLLATE pg_catalog."default",
+    location_id character varying(50) COLLATE pg_catalog."default",
+    price_range character varying(50) COLLATE pg_catalog."default",
+    rank character varying(50) COLLATE pg_catalog."default",
+    reservation_available character varying(50) COLLATE pg_catalog."default",
+    review_count character varying(50) COLLATE pg_catalog."default",
+    state character varying(50) COLLATE pg_catalog."default",
+    url character varying(200) COLLATE pg_catalog."default",
+    zip_code character varying(20) COLLATE pg_catalog."default",
+    rating character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT blockadvisor_location_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.blockadvisor_location
+    OWNER to postgres;

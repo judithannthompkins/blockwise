@@ -1,0 +1,69 @@
+select 
+l.business_name,
+l.address,
+c.block,
+c.offense,
+c.offense_group,
+c.year,
+c.report_date
+from blockadvisor_location l
+join blockadvisor_crime c
+on l.street_name = c.block_street_name
+where l.street_number >= c.block_street_number_begin
+and l.street_number <= c.block_street_number_end
+order by l.business_name,
+c.offense,
+c.report_date desc
+categories
+
+select 
+l.id,
+l.business_name,
+l.categories,
+c.blockadvisor_location_id,
+c.category
+from blockadvisor_location l
+left join blockadvisor_location_categories c
+on l.id = c.blockadvisor_location_id
+
+SELECT l.business_name,
+l.address,
+c.block,
+c.offense,
+c.offense_group,
+c.method,
+c.ucrrank,
+c.year,
+c.report_date
+FROM blockadvisor_location l
+LEFT JOIN blockadvisor_crime c ON l.street_name::text = c.block_street_name
+WHERE l.street_number::text >= c.block_street_number_begin AND l.street_number::text <= c.block_street_number_end
+ORDER BY l.business_name, c.report_date DESC, c.offense_group, c.offense;
+
+
+6316
+
+
+
+SELECT l.business_name,
+l.address,
+c.block,
+c.offense,
+c.offense_group,
+c.method,
+c.ucrrank,
+c.year,
+c.report_date,
+l.categories,
+lc.category
+FROM blockadvisor_location l
+LEFT JOIN blockadvisor_crime c ON l.street_name::text = c.block_street_name
+LEFT JOIN blockadvisor_location_categories lc on l.id = lc.blockadvisor_location_id
+WHERE l.street_number::text >= c.block_street_number_begin AND l.street_number::text <= c.block_street_number_end
+AND lc.category is not null
+ORDER BY l.business_name, c.report_date DESC, c.offense_group DESC, c.offense;
+
+
+
+4642
+

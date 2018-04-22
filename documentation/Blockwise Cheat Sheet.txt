@@ -1,0 +1,51 @@
+ENVIRONMENT
+workon blockwise
+
+POSTGRES
+
+psql -U postgres; purplerain
+
+\c blockwise
+
+select load_csv_file('blockadvisor_crime','C:\Users\Judith\projects\blockwise\data\dc-crimes-search-results_20180418.csv',28)
+
+\q or Ctrl+D
+
+neighborhood_cluster
+census_tract
+offense_group
+longitude
+end_date
+offense_text
+shift
+yblock
+district
+ward
+year
+offense_key
+bid
+sector
+psa
+ucrrank
+block_group
+voting_precinct
+xblock
+block
+start_date
+cnn
+offense
+anc
+report_date
+method
+location
+latitude
+
+
+
+    street_name character varying(300) COLLATE pg_catalog."default" NOT NULL,
+    street_number character varying(50) COLLATE pg_catalog."default",
+
+
+
+
+

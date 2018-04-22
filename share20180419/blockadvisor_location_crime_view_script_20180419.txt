@@ -1,0 +1,23 @@
+-- View: public.location_crime
+
+DROP VIEW public.location_crime;
+
+CREATE OR REPLACE VIEW public.location_crime AS
+ SELECT l.business_name,
+    l.address,
+    c.block,
+    c.offense,
+    c.offense_group,
+    c.method,
+    c.ucrrank,
+    c.year,
+    c.report_date
+   FROM blockadvisor_location l
+     JOIN blockadvisor_crime c ON l.street_name::text = c.block_street_name
+  WHERE l.street_number::text >= c.block_street_number_begin AND l.street_number::text <= c.block_street_number_end
+  ORDER BY l.business_name, c.offense, c.report_date DESC;
+
+ALTER TABLE public.location_crime
+    OWNER TO postgres;
+
+

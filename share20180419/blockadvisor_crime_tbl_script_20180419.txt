@@ -1,0 +1,45 @@
+-- Table: public.blockadvisor_crime
+
+DROP TABLE public.blockadvisor_crime;
+
+CREATE TABLE public.blockadvisor_crime
+(
+    neighborhood_cluster text COLLATE pg_catalog."default",
+    census_tract text COLLATE pg_catalog."default",
+    offense_group text COLLATE pg_catalog."default",
+    longitude text COLLATE pg_catalog."default",
+    end_date text COLLATE pg_catalog."default",
+    offense_text text COLLATE pg_catalog."default",
+    shift text COLLATE pg_catalog."default",
+    yblock text COLLATE pg_catalog."default",
+    district text COLLATE pg_catalog."default",
+    ward text COLLATE pg_catalog."default",
+    year text COLLATE pg_catalog."default",
+    offense_key text COLLATE pg_catalog."default",
+    bid text COLLATE pg_catalog."default",
+    sector text COLLATE pg_catalog."default",
+    psa text COLLATE pg_catalog."default",
+    ucrrank text COLLATE pg_catalog."default",
+    block_group text COLLATE pg_catalog."default",
+    voting_precinct text COLLATE pg_catalog."default",
+    xblock text COLLATE pg_catalog."default",
+    block text COLLATE pg_catalog."default",
+    block_street_name text COLLATE pg_catalog."default",
+    block_street_number_begin text COLLATE pg_catalog."default",
+    block_street_number_end text COLLATE pg_catalog."default",
+    start_date text COLLATE pg_catalog."default",
+    cnn text COLLATE pg_catalog."default",
+    offense text COLLATE pg_catalog."default",
+    anc text COLLATE pg_catalog."default",
+    report_date text COLLATE pg_catalog."default",
+    method text COLLATE pg_catalog."default",
+    location text COLLATE pg_catalog."default",
+    latitude text COLLATE pg_catalog."default"
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.blockadvisor_crime
+    OWNER to postgres;
