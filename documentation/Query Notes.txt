@@ -192,6 +192,8 @@ DROP VIEW public.location_crime;
 CREATE OR REPLACE VIEW public.location_crime AS
  SELECT l.business_name,
     l.address,
+	l.category01,
+	l.rating,
     c.block,
     c.offense,
     c.offense_group,
@@ -206,5 +208,4 @@ CREATE OR REPLACE VIEW public.location_crime AS
 
 ALTER TABLE public.location_crime
     OWNER TO postgres;
-
 

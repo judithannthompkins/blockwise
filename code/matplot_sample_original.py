@@ -9,6 +9,7 @@ print( "Data types in the file:")
 print(sales.dtypes)
 print("Summary of the input file:")
 print(sales.describe())
+
 print("Basic unit price stats:")
 print(sales['unit price'].describe())
 

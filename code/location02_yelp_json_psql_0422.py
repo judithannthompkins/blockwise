@@ -224,7 +224,7 @@ def get_business(api_key, business_id):
 def query_api(term, location):
 
 
-    with open('2018422yelp50.json') as json_data:
+    with open('2018424yelp50.json') as json_data:
         businesses = json.load(json_data)
 
     con = None
@@ -254,16 +254,25 @@ def query_api(term, location):
         rating = Decimal(business['rating'])
         #Judy need to insert into location categories table
         categories = ""
+        cat01 = "try"
+        count = 0
+        #cat01 = ""
         for x in business['categories']:
-            print(x['title'])
+            count = count + 1
             s_category = x['title']
             categories = categories + ' * ' + x['title']
+            print('x:' + str(x))
+            #put the first category in cat01
+            if count == 1:
+                cat01 = x['title']
 
+        print('first: ' + cat01)
         lati = float(business['coordinates']['latitude'])
         longi = float(business['coordinates']['longitude'])
         s_lati = str(business['coordinates']['latitude'])
         s_longi = str(business['coordinates']['longitude'])
         coord = s_lati + "," + s_longi
+        print(cat01)
 
         phone = business['display_phone']
         #print(phone)
@@ -282,8 +291,8 @@ def query_api(term, location):
 
         #Judy Note:  May need to add test for the keys. For example, price did not appear in all businesses and caused an error for a business (Napoli_ without it
 
-        SQL = "INSERT INTO blockadvisor_location(location_id, business_name, address, street_number, street_name, review_count, rating, categories, latitude, longitude, coordinates, phone, image_url, url, zip_code, city, state, country)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;"
-        cur.execute(SQL, (loc_id, business_name, address, house_number_no_char, street_name, review_count, rating, categories, lati, longi, coord, phone, image_url, url, zip, city, state, country))
+        SQL = "INSERT INTO blockadvisor_location(location_id, business_name, address, street_number, street_name, review_count, rating, categories, category01, latitude, longitude, coordinates, phone, image_url, url, zip_code, city, state, country)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;"
+        cur.execute(SQL, (loc_id, business_name, address, house_number_no_char, street_name, review_count, rating, categories, cat01, lati, longi, coord, phone, image_url, url, zip, city, state, country))
         con.commit()
 
         inserted_id = cur.fetchone()[0]
