@@ -13,7 +13,7 @@ def read_csv():
 
 #Judy Note: Loop through the crime data in the csv file, parse the block column, and load each record in Postgres
 
-    with open('C:\\Users\\Judith\projects\\blockwise\data\\dc-crimes-search-results_20180418.csv') as file:
+    with open('C:\\Users\\Judith\projects\\blockwise\data\\dc_crime2018423.csv') as file:
         reader = csv.reader(file)
         next(reader)  # Skip the header row.
         for row in reader:
