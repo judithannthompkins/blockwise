@@ -59,6 +59,7 @@ plt.subplots_adjust(left=0.1, bottom=0.3)
 #plt.subplots_adjust(left=0.1, bottom=0.1)
 plt.show()
 
+
 crime_patterns = loc_crimes[['ucrrank','report_date']]
 crime_patterns = crime_patterns.set_index('report_date')
 print(crime_patterns.head(10))
@@ -68,6 +69,7 @@ crime_plot.set_title("UCR Crime Patterns")
 crime_plot.set_xlabel("UCR Rank(1-9)")
 crime_plot.set_ylabel("Number of Crimes")
 plt.show()
+fig.savefig("crime_patterns.png")
 
 # Create a line chart showing purchases by month
 crime_patterns = loc_crimes[['ucrrank','report_date']]
@@ -77,5 +79,5 @@ fig = month_plot.get_figure()
 
 #Show the image, then save it
 plt.show()
-fig.savefig("total-crimes.png")
+fig.savefig("crime_by_month.png")
 

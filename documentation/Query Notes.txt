@@ -209,3 +209,8 @@ CREATE OR REPLACE VIEW public.location_crime AS
 ALTER TABLE public.location_crime
     OWNER TO postgres;
 
+CREATE VIEW ucrrank_crimes AS select count(ucrrank), ucrrank, offense_group, offense_key from blockadvisor_crime
+group by ucrrank, offense_group, offense_key
+order by ucrrank, offense_group, offense_key
+
+

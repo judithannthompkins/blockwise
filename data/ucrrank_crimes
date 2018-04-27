@@ -1,0 +1,3 @@
+select count(ucrrank), ucrrank, offense_group, offense_key from blockadvisor_crime
+group by ucrrank, offense_group, offense_key
+order by ucrrank, offense_group, offense_key;

@@ -1,0 +1,10 @@
+count,ucrrank,offense_group,offense_key
+257,1,violent,violent|homicide
+623,2,violent,violent|sex abuse
+3949,3,violent,violent|assault w/dangerous weapon
+4809,4,violent,violent|robbery
+3493,5,property,property|burglary
+28802,6,property,property|theft/other
+22160,7,property,property|theft f/auto
+5102,8,property,property|motor vehicle theft
+9,9,property,property|arson
